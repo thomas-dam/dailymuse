@@ -16,10 +16,9 @@ struct DailyMuseApp: App {
         }
         .menuBarExtraStyle(.window)
 
-        WindowGroup("DailyMuse", id: "settings") {
+        Settings {
             SettingsView()
                 .environmentObject(appState)
         }
-        .windowResizability(.contentSize)
     }
 }

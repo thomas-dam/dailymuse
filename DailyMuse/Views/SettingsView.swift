@@ -91,7 +91,7 @@ struct EndpointSettingsView: View {
                             .onChange(of: appState.llmAPIKeyForEditing) {
                                 saveAPIKey(appState.llmAPIKeyForEditing, key: KeychainHelper.llmApiKey)
                             }
-                        Text("Stored in Keychain. Leave empty for local servers.")
+                        Text("Stored in Keychain. Leave blank to keep any saved key; enter a new value to replace it.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         HStack {
@@ -149,7 +149,7 @@ struct EndpointSettingsView: View {
                             .onChange(of: appState.imageAPIKeyForEditing) {
                                 saveAPIKey(appState.imageAPIKeyForEditing, key: KeychainHelper.imageApiKey)
                             }
-                        Text("Stored in Keychain. Leave empty for local servers.")
+                        Text("Stored in Keychain. Leave blank to keep any saved key; enter a new value to replace it.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
 
@@ -209,7 +209,6 @@ struct EndpointSettingsView: View {
             }
             .padding(16)
         }
-        .onAppear(perform: appState.loadAPIKeysForEditingIfNeeded)
     }
 
     private var isTestingLLM: Bool {
@@ -250,7 +249,10 @@ struct EndpointSettingsView: View {
         llmTestStatus = .testing
         do {
             var service = PromptService(baseURL: appState.llmBaseURL, model: appState.llmModelName)
-            service.apiKey = appState.llmAPIKeyForEditing.nilIfEmpty
+            service.apiKey = appState.llmAPIKeyForEditing.nilIfEmpty ?? KeychainHelper.load(
+                key: KeychainHelper.llmApiKey,
+                service: KeychainHelper.serviceIdentifier
+            )
             _ = try await service.generateImagePrompt(
                 headlines: ["Test headline: technology advances"],
                 style: .editorial,
@@ -272,7 +274,10 @@ struct EndpointSettingsView: View {
                 imageModel: appState.imageModelName,
                 responseFormat: ImageResponseFormat(rawValue: appState.imageResponseFormat) ?? .b64JSON
             )
-            service.apiKey = appState.imageAPIKeyForEditing.nilIfEmpty
+            service.apiKey = appState.imageAPIKeyForEditing.nilIfEmpty ?? KeychainHelper.load(
+                key: KeychainHelper.imageApiKey,
+                service: KeychainHelper.serviceIdentifier
+            )
             try await service.testEndpoint()
             imageTestStatus = .success
         } catch {
