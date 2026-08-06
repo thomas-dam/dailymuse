@@ -1,6 +1,6 @@
 # DailyMuse
 
-Native macOS menu bar app that turns daily headlines into AI-generated wallpaper art. Fully BYOK (Bring Your Own Keys) — works with any OpenAI-compatible LLM and image generation endpoint.
+Native macOS app that turns daily headlines into AI-generated wallpaper art. DailyMuse opens a setup window for preferences, then can stay running for scheduled wallpaper generation. Fully BYOK (Bring Your Own Keys) — works with any OpenAI-compatible LLM and image generation endpoint.
 
 ## Architecture
 
@@ -18,7 +18,7 @@ Headlines → LLM (prompt craft) → Image Gen → Post-process → Set Wallpape
 
 ```
 DailyMuse/
-├── DailyMuseApp.swift           # @main entry, MenuBarExtra
+├── DailyMuseApp.swift           # @main entry, setup window
 ├── Models/
 │   ├── AppState.swift           # Central state, generation pipeline
 │   ├── DailyMuseError.swift     # Error types
@@ -30,18 +30,17 @@ DailyMuse/
 │   ├── ImageProcessor.swift     # E-ink dithering via Core Image/Graphics
 │   └── WallpaperService.swift   # NSWorkspace.setDesktopImageURL
 └── Views/
-    ├── MenuBarView.swift        # Menu bar dropdown UI
     └── SettingsView.swift       # Preferences: endpoints, style, schedule
 ```
 
 ## Setup in Xcode
 
-1. Create a new macOS App project (SwiftUI, Swift)
-2. Bundle ID: `com.yourdomain.DailyMuse`
-3. Copy all `.swift` files into the project
-4. Set "Application is agent (UIElement)" = YES in Info.plist
-   (this hides the Dock icon — menu bar only)
-5. Build target: macOS 14.0+
+1. Open `DailyMuse.xcodeproj`
+2. Select the DailyMuse target
+3. Set your bundle identifier and signing team in Xcode
+4. Build target: macOS 14.0+
+
+DailyMuse is a normal macOS app with a Dock icon and standard Xcode project settings. Use the setup window to configure endpoints, API keys, style, and schedule.
 
 ## Image Endpoint Types
 
@@ -56,16 +55,13 @@ DailyMuse/
 Generated images and JSON sidecars are saved to `~/Pictures/DailyMuse/`.
 Each generation produces a timestamped PNG and a matching JSON with:
 - Headlines used
-- LLM endpoint and model
+- LLM endpoint, model, and raw prompt response
 - Image prompt generated
-- Style template used
+- Style template and output target used
 
 ## TODO
 
-- [ ] SMAppService login item registration
-- [ ] Keychain storage for API keys
 - [ ] History browser view with gallery
 - [ ] Drag & drop custom style template editing
 - [ ] Multiple headline source mixing
 - [ ] Webhook upload support (TRMNL, etc.)
-- [ ] Notification on generation complete

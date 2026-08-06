@@ -12,6 +12,9 @@
 		53D9E42FEB2318DA80B8E18B /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D3F9A0976D192BA565A8CC9 /* ImageService.swift */; };
 		6D25A8100DBE717B10F1BDFF /* StyleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848E121C5202EEEF5CAF425A /* StyleTemplate.swift */; };
 		6D556C025511817EB332B491 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C860E6B8E89AC20835EF122 /* AppState.swift */; };
+		84F276143024411200516336 /* GenerationTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F276133024411200516336 /* GenerationTarget.swift */; };
+		84F276163024412200516336 /* ImagePromptResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F276153024412200516336 /* ImagePromptResult.swift */; };
+		84F276183024412300516336 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F276173024412300516336 /* KeychainHelper.swift */; };
 		91FC3DF0A4A4F050E8FD45C2 /* WallpaperService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 950921E47D185C114DBC7107 /* WallpaperService.swift */; };
 		A3329D108168DBD9137625AA /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A9E8C3FBBAEE70345EA97EB /* MenuBarView.swift */; };
 		B86CAD175E9706F6A4D93607 /* PromptService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D13771E54A4C9AE0E3B7D57C /* PromptService.swift */; };
@@ -27,6 +30,9 @@
 		366D6C7B82D17226861149BC /* DailyMuseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyMuseError.swift; sourceTree = "<group>"; };
 		7C860E6B8E89AC20835EF122 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		848E121C5202EEEF5CAF425A /* StyleTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleTemplate.swift; sourceTree = "<group>"; };
+		84F276133024411200516336 /* GenerationTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerationTarget.swift; sourceTree = "<group>"; };
+		84F276153024412200516336 /* ImagePromptResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePromptResult.swift; sourceTree = "<group>"; };
+		84F276173024412300516336 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		880269530F22D14CED0E6B81 /* ImageProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcessor.swift; sourceTree = "<group>"; };
 		902728CC0939FD358933EF27 /* HeadlineFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadlineFetcher.swift; sourceTree = "<group>"; };
 		950921E47D185C114DBC7107 /* WallpaperService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperService.swift; sourceTree = "<group>"; };
@@ -53,6 +59,7 @@
 				9D3F9A0976D192BA565A8CC9 /* ImageService.swift */,
 				D13771E54A4C9AE0E3B7D57C /* PromptService.swift */,
 				950921E47D185C114DBC7107 /* WallpaperService.swift */,
+				84F276173024412300516336 /* KeychainHelper.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -80,6 +87,8 @@
 				7C860E6B8E89AC20835EF122 /* AppState.swift */,
 				366D6C7B82D17226861149BC /* DailyMuseError.swift */,
 				848E121C5202EEEF5CAF425A /* StyleTemplate.swift */,
+				84F276133024411200516336 /* GenerationTarget.swift */,
+				84F276153024412200516336 /* ImagePromptResult.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -124,8 +133,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
-				TargetAttributes = {
-				};
 			};
 			buildConfigurationList = 9ED13D53A229EC1C86016CDB /* Build configuration list for PBXProject "DailyMuse" */;
 			developmentRegion = en;
@@ -154,12 +161,15 @@
 				6D556C025511817EB332B491 /* AppState.swift in Sources */,
 				379C9E76229829F005BE60A6 /* DailyMuseApp.swift in Sources */,
 				BD834981E01B149B0339A424 /* DailyMuseError.swift in Sources */,
+				84F276163024412200516336 /* ImagePromptResult.swift in Sources */,
 				BB05AEEC921D26FB97D25F46 /* HeadlineFetcher.swift in Sources */,
+				84F276143024411200516336 /* GenerationTarget.swift in Sources */,
 				BF0FA40BD9DC4215D6B3E9CC /* ImageProcessor.swift in Sources */,
 				53D9E42FEB2318DA80B8E18B /* ImageService.swift in Sources */,
 				A3329D108168DBD9137625AA /* MenuBarView.swift in Sources */,
 				B86CAD175E9706F6A4D93607 /* PromptService.swift in Sources */,
 				3F60ABC50BED479DE414DA09 /* SettingsView.swift in Sources */,
+				84F276183024412300516336 /* KeychainHelper.swift in Sources */,
 				6D25A8100DBE717B10F1BDFF /* StyleTemplate.swift in Sources */,
 				91FC3DF0A4A4F050E8FD45C2 /* WallpaperService.swift in Sources */,
 			);
