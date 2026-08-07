@@ -7,7 +7,7 @@ It collects headlines, asks an LLM to turn them into a visual prompt, sends that
 ## Features
 
 - Fetches daily headlines from Hacker News or an RSS feed.
-- Uses an OpenAI-compatible chat completion endpoint to craft image prompts.
+- Uses an OpenAI-compatible chat completion endpoint, including OpenRouter, to craft image prompts.
 - Supports configurable image-generation endpoints, including OpenAI-compatible APIs, direct `/generate` servers, queued `/generate` servers, fal.ai queue endpoints, and ComfyUI.
 - Saves generated PNG files and JSON sidecars to `~/Pictures/DailyMuse/`.
 - Can optionally process images for a monochrome e-ink target.
@@ -47,7 +47,7 @@ Known current limitations:
 
 On first launch, open the settings window and configure:
 
-- An LLM base URL, model name, and optional API key.
+- An LLM base URL, model name, and optional API key. The OpenRouter preset uses `https://openrouter.ai/api/v1` with `qwen/qwen3.5-flash-02-23`.
 - An image-generation base URL, endpoint type, model or endpoint identifier when needed, and optional API key.
 - A headline source, either Hacker News or an RSS feed URL.
 - Generation settings such as image size, style, e-ink mode, and whether generated images should be set as wallpaper automatically.

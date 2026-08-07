@@ -79,6 +79,9 @@ struct EndpointSettingsView: View {
                                 Button("Paste", systemImage: "doc.on.clipboard") {
                                     pasteIntoLLMBaseURL()
                                 }
+                                Button("Use OpenRouter") {
+                                    useOpenRouterPreset()
+                                }
                                 Spacer()
                             }
                         }
@@ -99,7 +102,7 @@ struct EndpointSettingsView: View {
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                             Spacer()
-                            Text("LM Studio · Ollama · oMLX · OpenAI")
+                            Text("LM Studio · Ollama · oMLX · OpenAI · OpenRouter")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -306,6 +309,11 @@ struct EndpointSettingsView: View {
         }
     }
 
+    private func useOpenRouterPreset() {
+        appState.llmBaseURL = "https://openrouter.ai/api/v1"
+        appState.llmModelName = "qwen/qwen3.5-flash-02-23"
+    }
+
     private func useFalPreset() {
         appState.imageEndpointType = ImageEndpointType.falQueue.rawValue
         appState.imageBaseURL = "https://queue.fal.run"
@@ -473,22 +481,31 @@ struct ScheduleSettingsView: View {
                             }
 
                         if appState.schedulingEnabled {
-                            HStack {
+                            HStack(spacing: 8) {
+                                Text("Time")
+
                                 Picker("Hour", selection: $appState.scheduleHour) {
                                     ForEach(0..<24, id: \.self) { h in
                                         Text(String(format: "%02d", h)).tag(h)
                                     }
                                 }
-                                .frame(width: 80)
+                                .labelsHidden()
+                                .pickerStyle(.menu)
+                                .frame(minWidth: 96)
+                                .accessibilityLabel("Hour")
 
                                 Text(":")
+                                    .monospacedDigit()
 
                                 Picker("Minute", selection: $appState.scheduleMinute) {
                                     ForEach([0, 15, 30, 45], id: \.self) { m in
                                         Text(String(format: "%02d", m)).tag(m)
                                     }
                                 }
-                                .frame(width: 80)
+                                .labelsHidden()
+                                .pickerStyle(.menu)
+                                .frame(minWidth: 96)
+                                .accessibilityLabel("Minute")
                             }
                             .onChange(of: appState.scheduleHour) { appState.setupSchedulerIfNeeded() }
                             .onChange(of: appState.scheduleMinute) { appState.setupSchedulerIfNeeded() }

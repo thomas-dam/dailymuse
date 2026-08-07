@@ -13,6 +13,7 @@ Headlines -> LLM (prompt craft) -> Image Gen -> Post-process -> Set Wallpaper
                Ollama              ComfyUI
                oMLX                fal.ai
                OpenAI              OpenAI-compatible APIs
+               OpenRouter
                Any /v1/chat        Direct / queued image APIs
 ```
 
@@ -48,6 +49,8 @@ DailyMuse/
 4. Build target: macOS 14.0+
 
 DailyMuse is a normal macOS app with a Dock icon and standard Xcode project settings. Use the setup window to configure endpoints, API keys, style, and schedule.
+
+The LLM endpoint expects an OpenAI-compatible chat completions API. The OpenRouter preset sets the base URL to `https://openrouter.ai/api/v1` and the model to `qwen/qwen3.5-flash-02-23`.
 
 ## Image Endpoint Types
 
