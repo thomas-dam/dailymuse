@@ -15,7 +15,7 @@ enum StyleTemplate: String, CaseIterable, Identifiable, Codable, Sendable {
         case .editorial: "Editorial"
         case .storyScene: "Story Scene"
         case .storyBlueprint: "Blueprint"
-        case .storyDesk: "Hacker's Desk"
+        case .storyDesk: "Story Desk"
         case .storyFrontpage: "Front Page"
         case .original: "Original"
         }
@@ -24,9 +24,9 @@ enum StyleTemplate: String, CaseIterable, Identifiable, Codable, Sendable {
     var description: String {
         switch self {
         case .editorial: "Single-scene editorial metaphor — clean, graphic, high contrast"
-        case .storyScene: "Cinematic human scene — more narrative, less retro-tech"
+        case .storyScene: "Cinematic narrative scene — specific, physical, contemporary"
         case .storyBlueprint: "Dense annotated systems poster — technical drawing aesthetic"
-        case .storyDesk: "Detailed workspace scene built from the day's stories"
+        case .storyDesk: "Detailed material-culture scene built from the day's themes"
         case .storyFrontpage: "Faux newspaper or magazine cover layout"
         case .original: "Classic style from the original project"
         }
@@ -51,7 +51,9 @@ enum StyleTemplate: String, CaseIterable, Identifiable, Codable, Sendable {
         case .storyScene:
             role = """
             You are a concept artist turning a noisy technology-news cycle into a single scene with \
-            narrative tension. Be specific, visual, witty, contemporary, and cinematic. Do not add \
+            narrative tension. Be specific, visual, witty, contemporary, and cinematic. A person is \
+            optional, never the default subject. Avoid the stock image of a programmer or hacker at \
+            a computer, as well as generic server rooms, holograms, and neon cityscapes. Do not add \
             visible text, numbers, interfaces, or logos.
             """
         case .storyBlueprint:
@@ -62,9 +64,11 @@ enum StyleTemplate: String, CaseIterable, Identifiable, Codable, Sendable {
             """
         case .storyDesk:
             role = """
-            You are an art director staging a detailed but pleasing hacker workspace. Stories appear as \
-            objects, notes, screens, prototypes, cables, books, diagrams, and artifacts. Intentional short \
-            text on ephemera is allowed, but avoid walls of copy and accidental gibberish.
+            You are an art director staging a detailed but pleasing workspace as material culture. The \
+            selected themes appear as specific objects, prototypes, samples, books, diagrams, natural \
+            materials, and artifacts. The room itself is the subject; no person is required. Do not default \
+            to a hoodie-wearing hacker, glowing laptop, generic code screen, or neon cyberpunk studio. \
+            Intentional short text on ephemera is allowed, but avoid walls of copy and accidental gibberish.
             """
         case .storyFrontpage:
             role = """
@@ -119,7 +123,8 @@ enum StyleTemplate: String, CaseIterable, Identifiable, Codable, Sendable {
                 keys: "why_today_is_interesting, scene, visual_hooks, image_prompt",
                 requirements: """
                 - describe one scene from a slightly elevated wide angle
-                - include a central object, a human-scale reference, and 2–3 symbolic supporting elements
+                - include a central object, a clear sense of scale, and 2–3 supporting elements
+                - include a person only when the editorial idea benefits from one
                 - feel witty, tense, and contemporary rather than nostalgic by default
                 - include zero visible text, numbers, interfaces, or logos
                 """,
@@ -143,7 +148,7 @@ enum StyleTemplate: String, CaseIterable, Identifiable, Codable, Sendable {
                 keys: "atmosphere, featured_objects, composition, image_prompt",
                 requirements: """
                 - create one desk, lab bench, studio, or control-room scene
-                - integrate every story through physical objects and environmental details
+                - embody 4–6 selected headline ideas through physical objects and environmental details
                 - allow sticky notes, labels, book spines, screen snippets, and schematic notes
                 - feel warm, clever, dense, and composed rather than messy
                 """,
@@ -176,6 +181,19 @@ enum StyleTemplate: String, CaseIterable, Identifiable, Codable, Sendable {
 
         Return one strict JSON object with these keys: \(keys).
         Do not wrap the JSON in Markdown fences and do not add analysis or explanation.
+
+        First synthesize the editorial meaning of this particular set of headlines:
+        - identify 3–5 concrete recurring ideas, tensions, or surprising connections
+        - distinguish the subject of a headline from generic technology-news atmosphere
+        - select the strongest ideas rather than illustrating every headline literally
+        - do not invent facts beyond what the headline supports
+
+        The final image_prompt must make at least three selected headline ideas traceable through \
+        concrete visual choices. It must not merely depict "technology," "AI," or "the future." Avoid \
+        a young person at a computer, a hoodie-wearing hacker, a glowing laptop, a generic server room, \
+        floating interfaces, circuit-board scenery, and neon cyberpunk unless a selected idea truly \
+        requires that exact subject. Prefer objects, environments, physical processes, scale contrasts, \
+        and visual cause-and-effect over symbolic UI decoration.
 
         Requirements for image_prompt:
         \(requirements)

@@ -20,15 +20,32 @@ struct PromptService: Sendable {
             throw DailyMuseError.invalidURL(endpoint)
         }
 
-        let body: [String: Any] = [
+        var userPrompt = style.userPrompt(headlines: headlines, target: target)
+        if modelIdentifier.localizedCaseInsensitiveContains("qwen") {
+            userPrompt += style.expectsStructuredOutput
+                ? "\n\n/no_think\nBegin the response with { and output only the requested final JSON object."
+                : "\n\n/no_think\nOutput only the final image prompt."
+        }
+
+        var body: [String: Any] = [
             "model": modelIdentifier,
             "messages": [
                 ["role": "system", "content": style.systemPrompt(target: target)],
-                ["role": "user", "content": style.userPrompt(headlines: headlines, target: target)]
+                ["role": "user", "content": userPrompt]
             ],
-            "temperature": 0.7,
-            "max_tokens": 900
+            "temperature": 0.5,
+            // Reasoning models may spend a substantial part of their response analyzing the
+            // headlines before emitting the requested JSON. Give structured styles enough room
+            // to reach the final image_prompt instead of forwarding a truncated thought process.
+            "max_tokens": style.expectsStructuredOutput ? 2_400 : 1_200
         ]
+
+        if Self.isOpenRouter(baseURL), style.expectsStructuredOutput {
+            // The upstream hn_local_image app disables thinking in the model's chat template.
+            // OpenRouter exposes the equivalent behavior through its normalized reasoning field.
+            body["reasoning"] = ["effort": "none", "exclude": true]
+            body["response_format"] = ["type": "json_object"]
+        }
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -54,6 +71,7 @@ struct PromptService: Sendable {
               let content = message["content"] as? String else {
             throw DailyMuseError.llmError("Unexpected response format")
         }
+        let finishReason = choices.first?["finish_reason"] as? String
 
         let rawOutput = content.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !rawOutput.isEmpty else {
@@ -62,7 +80,8 @@ struct PromptService: Sendable {
 
         let imagePrompt = try Self.extractImagePrompt(
             from: rawOutput,
-            expectsStructuredOutput: style.expectsStructuredOutput
+            expectsStructuredOutput: style.expectsStructuredOutput,
+            finishReason: finishReason
         )
         return ImagePromptResult(rawOutput: rawOutput, imagePrompt: imagePrompt)
     }
@@ -92,29 +111,41 @@ struct PromptService: Sendable {
         return identifier
     }
 
+    private static func isOpenRouter(_ rawBaseURL: String) -> Bool {
+        guard let host = URL(string: rawBaseURL)?.host?.lowercased() else { return false }
+        return host == "openrouter.ai" || host.hasSuffix(".openrouter.ai")
+    }
+
     static func extractImagePrompt(
         from rawOutput: String,
-        expectsStructuredOutput: Bool
+        expectsStructuredOutput: Bool,
+        finishReason: String? = nil
     ) throws -> String {
         let withoutThinking = rawOutput.removingThinkingBlocks()
 
-        if let jsonDocument = withoutThinking.extractedJSONDocument(),
-           let data = jsonDocument.data(using: .utf8),
-           let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+        if let object = withoutThinking.extractedJSONObject(),
            let imagePrompt = object["image_prompt"] as? String {
             return try validatedPrompt(imagePrompt)
+        }
+
+        // Structured styles deliberately separate headline synthesis from the final prompt.
+        // Never let prose, visible chain-of-thought, or a token-truncated response cross the
+        // boundary into image generation just because it is non-empty.
+        if expectsStructuredOutput {
+            if finishReason == "length" {
+                throw DailyMuseError.llmError(
+                    "The prompt model ran out of output tokens before returning its final image_prompt. No image was generated."
+                )
+            }
+            throw DailyMuseError.llmError(
+                "The prompt model did not return the required JSON image_prompt. No image was generated from its analysis text."
+            )
         }
 
         let cleaned = withoutThinking
             .removingMarkdownFence()
             .extractingPromptAfterKnownMarker()
             .trimmingCharacters(in: .whitespacesAndNewlines)
-
-        if expectsStructuredOutput, cleaned.looksLikeJSONObject {
-            throw DailyMuseError.llmError(
-                "The prompt model returned JSON without a valid image_prompt string; it was not sent to image generation."
-            )
-        }
 
         return try validatedPrompt(cleaned)
     }
@@ -146,13 +177,23 @@ private extension String {
         .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    func extractedJSONDocument() -> String? {
-        guard let start = firstIndex(of: "{"),
-              let end = lastIndex(of: "}"),
-              start <= end else {
-            return nil
+    func extractedJSONObject() -> [String: Any]? {
+        guard let end = lastIndex(of: "}") else { return nil }
+
+        // Work backwards so a valid final JSON answer can still be recovered when a model
+        // prints an unrequested reasoning preamble that itself contains braces.
+        let starts = indices.filter { self[$0] == "{" }.reversed()
+        for start in starts where start <= end {
+            let candidate = String(self[start...end])
+            guard let data = candidate.data(using: .utf8),
+                  let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+                continue
+            }
+            if object["image_prompt"] != nil {
+                return object
+            }
         }
-        return String(self[start...end])
+        return nil
     }
 
     func removingMarkdownFence() -> String {
@@ -192,10 +233,5 @@ private extension String {
             return self
         }
         return String(dropFirst().dropLast())
-    }
-
-    var looksLikeJSONObject: Bool {
-        let trimmed = trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmed.hasPrefix("{") && trimmed.hasSuffix("}")
     }
 }

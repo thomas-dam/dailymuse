@@ -33,3 +33,14 @@ targets:
         PRODUCT_NAME: DailyMuse
         MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.utilities
+  DailyMuseTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: DailyMuseTests
+    dependencies:
+      - target: DailyMuse
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.thomasdam.DailyMuseTests

@@ -173,7 +173,7 @@ struct EndpointSettingsView: View {
                             TextField(selectedImageEndpointType == .falQueue ? "fal.ai model ID" : "Image model", text: $appState.imageModelName)
                                 .textFieldStyle(.roundedBorder)
                                 .font(.system(.body, design: .monospaced))
-                            Text(selectedImageEndpointType == .falQueue ? "Example: fal-ai/flux/schnell or openai/gpt-image-2." : "Example: krea-2.")
+                            Text(selectedImageEndpointType == .falQueue ? "Example: fal-ai/flux-2/klein/9b or fal-ai/z-image/turbo." : "Example: krea-2.")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                         }
@@ -317,7 +317,7 @@ struct EndpointSettingsView: View {
     private func useFalPreset() {
         appState.imageEndpointType = ImageEndpointType.falQueue.rawValue
         appState.imageBaseURL = "https://queue.fal.run"
-        appState.imageModelName = "fal-ai/flux/schnell"
+        appState.imageModelName = "fal-ai/flux-2/klein/9b"
         appState.imageResponseFormat = ImageResponseFormat.url.rawValue
     }
 }

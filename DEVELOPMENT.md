@@ -59,7 +59,7 @@ The LLM endpoint expects an OpenAI-compatible chat completions API. The OpenRout
 | OpenAI-compatible | `/v1/images/generations` returning b64 or URL | DALL-E-compatible APIs, fal.ai-compatible proxies |
 | Local Direct | POST prompt -> raw PNG, base64, or image URL in the same response | MFlux server, Krea2-style local server |
 | Queued /generate | POST prompt -> job/status/result URL, then poll for result | Generic queued image server |
-| fal.ai Queue | Submit to fal.ai queue, poll status, fetch result image URL | `fal-ai/flux/schnell`, `openai/gpt-image-2` |
+| fal.ai Queue | Submit to fal.ai queue, poll status, fetch result image URL | `fal-ai/flux-2/klein/9b`, `fal-ai/z-image/turbo` |
 | ComfyUI | Queue workflow + poll for result | ComfyUI localhost |
 
 ## Output
